@@ -11,4 +11,6 @@ class BaseObject(object):
     def set_title(self,title):
         if self.data.has_key('title'):
             self.title = self.data['title']
-        self.title = title
+        else:
+            title = title.split("/")[-1]
+            self.title = title
