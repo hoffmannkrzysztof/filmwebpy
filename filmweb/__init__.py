@@ -2,7 +2,7 @@
 from filmweb._exceptions import FilmwebParserError
 from filmweb.parser import FilmwebHTTP
 
-def Filmweb(access=None, *arguments, **keywords):
+def Filmweb(access=None):
 
     if access == 'http':
         return FilmwebHTTP()
@@ -12,7 +12,9 @@ def Filmweb(access=None, *arguments, **keywords):
 
 def main():
     fa = Filmweb('http')
-    print fa.search_movie('Mad')
+    movies = fa.search_movie('piraci')
+    print movies
+    print movies[0]['cast']
 
 if __name__ == "__main__":
     main()
