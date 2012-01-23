@@ -5,13 +5,15 @@ from filmweb.vars import filmweb_root
 
 class BaseObject(object):
 
-    def __init__(self,objID,title=None,url=None,data=None):
+    def __init__(self,objID,title=None,url=None,data=None,roleType=None,roleName=None):
         self.reset()
         if data is None: data = {}
-        self.objID = objID
+        self.set_id(objID)
         self.set_data(data)
         self.set_title(title)
         self.set_url(url)
+        self.roleName = roleName
+        self.roleType = roleType
 
 
     def reset(self):
@@ -19,6 +21,7 @@ class BaseObject(object):
         self.objID = None
         self.title = u''
         self.url = u''
+        self.attr = u''
 
     def __getitem__(self, key):
         """Return the value for a given key"""
@@ -49,6 +52,9 @@ class BaseObject(object):
         if url is not None:
             self.url = urljoin(filmweb_root,url).strip()
 
+    def set_id(self,id):
+        self.objID = int(id)
+
     def set_title(self,title):
         if self.data.has_key('title'):
             self.title = self.data['title']
@@ -56,3 +62,6 @@ class BaseObject(object):
             title = title.split("/")[-1]
             self.title = title
         self.title = self.title.strip()
+
+    def isSame(self,item):
+        return self.objID == self.objID

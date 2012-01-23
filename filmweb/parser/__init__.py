@@ -2,8 +2,9 @@
 import urllib2
 from BeautifulSoup import BeautifulSoup, BeautifulStoneSoup
 from filmweb.Movie import Movie
+from filmweb.Person import Person
 from filmweb._exceptions import FilmwebDataAccessError
-from filmweb.vars import filmweb_movie_search
+from filmweb.vars import filmweb_movie_search, filmweb_person_link
 import re, htmlentitydefs
 
 class FilmwebHTTP(object):
@@ -42,11 +43,20 @@ class FilmwebHTTP(object):
         #http://www.filmweb.pl/search/person?q=Tom+Cruise
         """Return list of persons"""
 
+    def get_person(self,personID):
+        return self._get_person(personID)
+
     def _get_person(self,personID):
         """Return Person object"""
+        grabber = HTMLGrabber()
+        content = grabber.retrieve(filmweb_person_link % ("",personID))
+        soup = BeautifulStoneSoup( content,convertEntities=BeautifulStoneSoup.HTML_ENTITIES )
+        title = soup.find("h1",{'class':'pageTitle'}).text
+        return Person(personID,title=title)
 
     def _get_movie(self,movieID):
         """Return Movie object"""
+        Movie(movieID,title=title)
 
     def _get_real_id(self,*strings):
         for text in strings:

@@ -12,9 +12,17 @@ def Filmweb(access=None):
 
 def main():
     fa = Filmweb('http')
+
+
     movies = fa.search_movie('piraci')
-    print movies
-    print movies[0]['cast']
+    movie =  movies[0]
+    person =fa.get_person(4146)
+    print person in movie
+
+    #for cast in movies[0]['cast']:
+    #    print cast.title,cast.roleType,cast.roleName
+
+
 
 if __name__ == "__main__":
     main()
