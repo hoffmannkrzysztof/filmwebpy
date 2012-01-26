@@ -1,6 +1,7 @@
 # coding=utf-8
 from filmweb.addon import BaseObject
 import sys
+from filmweb.vars import filmweb_movie_link
 
 class Movie(BaseObject):
 
@@ -14,10 +15,18 @@ class Movie(BaseObject):
     __str__ = __repr__
 
     def __contains__(self, item):
-        """Return true if this Person has worked in the given Movie,
-        or if the fiven Character was played by this Person."""
+        """Return true if this Person has worked in the given Movie"""
         from filmweb.Person import Person
         if isinstance(item, Person):
                     for cast in self['cast']:
                         if cast.isSame(item): return True
+
         return False
+
+    def _get_url(self):
+        from filmweb.parser import HTMLGrabber
+        grabber = HTMLGrabber()
+        f = grabber.open( filmweb_movie_link % ('film',2000,self.objID) )
+        return f.url
+
+

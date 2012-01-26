@@ -19,8 +19,8 @@ class BaseObject(object):
     def reset(self):
         self.data = {}
         self.objID = None
-        self.title = u''
-        self.url = u''
+        self.title = None
+        self.url = None
         self.attr = u''
 
     def __getitem__(self, key):
@@ -44,6 +44,9 @@ class BaseObject(object):
         """Remove the given key."""
         del self.data[key]
 
+    def __eq__(self, other):
+        return self.objID == other.objID
+
     def set_data(self,data):
         """Set a data dictionary"""
         self.data.update(data)
@@ -51,6 +54,15 @@ class BaseObject(object):
     def set_url(self,url):
         if url is not None:
             self.url = urljoin(filmweb_root,url).strip()
+        elif self.objID:
+            self.url = self.get_url()
+
+    def _get_url(self):
+        """Return movie, person url"""
+        raise NotImplementedError('override this method')
+
+    def get_url(self):
+        return self._get_url()
 
     def set_id(self,id):
         self.objID = int(id)
@@ -58,9 +70,12 @@ class BaseObject(object):
     def set_title(self,title):
         if self.data.has_key('title'):
             self.title = self.data['title']
-        else:
+        elif title is not None:
             title = title.split("/")[-1]
             self.title = title
+        else:
+            self.title = "Not found yet"
+
         self.title = self.title.strip()
 
     def isSame(self,item):

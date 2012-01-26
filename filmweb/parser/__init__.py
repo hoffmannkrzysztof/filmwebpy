@@ -1,4 +1,5 @@
 # coding=utf-8
+import urllib
 import urllib2
 from BeautifulSoup import BeautifulSoup, BeautifulStoneSoup
 from filmweb.Movie import Movie
@@ -11,8 +12,8 @@ class FilmwebHTTP(object):
 
     def _search_movie(self,title,results):
         """Return list of movies"""
-        p_title = title #@TODO Convert to ascii
         grabber = HTMLGrabber()
+        p_title = grabber.encode_string(title)
         li_list = []
 
         for type in ['film','serial']:
@@ -56,22 +57,44 @@ class FilmwebHTTP(object):
 
     def _get_movie(self,movieID):
         """Return Movie object"""
-        Movie(movieID,title=title)
+        return Movie(movieID)
+
+    def get_movie(self,movieID):
+        return self._get_movie(movieID)
 
     def _get_real_id(self,*strings):
         for text in strings:
             text = str(text)
 
-            list =  re.findall(r'-([0-9]*)', text)
+            list = re.findall("dropdownTarget ([0-9]*)_FILM", text)
             if len(list) and list[-1].isdigit():
                 return int(list[-1])
 
-            list = re.findall("dropdownTarget ([0-9]*)_FILM", text)
+            list =  re.findall(r'-([0-9]*)', text)
             if len(list) and list[-1].isdigit():
                 return int(list[-1])
 
         return None
 
+class ObjectParser(object):
+    def __init__(self,obj):
+        self.obj = obj
+        if self.obj.url:
+            self._download_content(self.obj.url)
+            self.parse_basic()
+
+
+    def _download_content(self,url):
+        grabber = HTMLGrabber()
+        self.content = grabber.retrieve(url)
+        self.soup = BeautifulSoup(self.content,convertEntities=BeautifulStoneSoup.HTML_ENTITIES)
+
+    def parse_basic(self):
+        self._parse_basic()
+
+    def _parse_basic(self):
+        """Parse basic information about movie or person. Eg. title, year, aka"""
+        raise NotImplementedError('override this method')
 
 
 class HTMLGrabber(object):
@@ -88,12 +111,17 @@ class HTMLGrabber(object):
     def get_headers(self):
         return self.headers
 
-    def retrieve(self, url):
+    def encode_string(self,string):
+        return urllib.quote(string.decode("utf8"))
+
+    def open(self, url):
         opener = urllib2.build_opener()
         opener.addheaders = self.get_headers()
         try:
-            f = opener.open(url)
+            return opener.open(url)
         except urllib2.HTTPError, urllib2.URLError:
             raise FilmwebDataAccessError()
-        else:
-            return f.read()
+
+    def retrieve(self,url):
+        return self.open(url).read()
+
