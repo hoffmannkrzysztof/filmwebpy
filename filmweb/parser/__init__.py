@@ -1,25 +1,25 @@
 # coding=utf-8
-import urllib
-import urllib2
-from BeautifulSoup import BeautifulSoup, BeautifulStoneSoup
+
+from BeautifulSoup import BeautifulStoneSoup
 from filmweb.Movie import Movie
 from filmweb.Person import Person
-from filmweb._exceptions import FilmwebDataAccessError
 from filmweb.vars import filmweb_movie_search, filmweb_person_link
-import re, htmlentitydefs
+import re
+from filmweb.parser.HTMLGrabber import HTMLGrabber
+from vars import filmweb_search
 
 class FilmwebHTTP(object):
 
-    def _search_movie(self,title,results):
+    def _search_movie(self,title,results,):
         """Return list of movies"""
         grabber = HTMLGrabber()
         p_title = grabber.encode_string(title)
         li_list = []
 
-        for type in ['film','serial']:
-            content = grabber.retrieve(filmweb_movie_search % (type,p_title,1)) #@Make search more pages not only 1
-            soup=BeautifulStoneSoup(content,convertEntities=BeautifulStoneSoup.HTML_ENTITIES )
-            li_list.extend( soup.findAll('li',{'class':'searchResult'}) )
+        #for type in ['film','serial']:
+        content = grabber.retrieve(filmweb_search % (p_title,1)) #@Make search more pages not only 1
+        soup=BeautifulStoneSoup(content,convertEntities=BeautifulStoneSoup.HTML_ENTITIES )
+        li_list.extend( soup.findAll('li',{'class':'searchResult'}) )
 
         for li in li_list:
             a = li.find('a',{'class':'searchResultTitle'})
@@ -27,10 +27,9 @@ class FilmwebHTTP(object):
             url = a['href']
             # have to do another check because sometimes url doesnt provide movieID
             div = li.find('div',{'class': re.compile(r'\bdropdownTarget\b')})
-
-            movieID = self._get_real_id(url,div['class'])
-
-            yield movieID,title,url
+            if div is not None:
+                movieID = self._get_real_id(url,div['class'])
+                yield movieID,title,url
 
     def search_movie(self,title,results=20):
         try:
@@ -59,6 +58,7 @@ class FilmwebHTTP(object):
         """Return Movie object"""
         return Movie(movieID)
 
+
     def get_movie(self,movieID):
         return self._get_movie(movieID)
 
@@ -66,62 +66,12 @@ class FilmwebHTTP(object):
         for text in strings:
             text = str(text)
 
-            list = re.findall("dropdownTarget ([0-9]*)_FILM", text)
-            if len(list) and list[-1].isdigit():
-                return int(list[-1])
+            found = re.search("dropdownTarget (?P<id>[0-9]*)_(FILM|SERIAL)", text)
+            if found is not None:
+                return int(found.group('id'))
 
             list =  re.findall(r'-([0-9]*)', text)
             if len(list) and list[-1].isdigit():
                 return int(list[-1])
 
         return None
-
-class ObjectParser(object):
-    def __init__(self,obj):
-        self.obj = obj
-        if self.obj.url:
-            self._download_content(self.obj.url)
-            self.parse_basic()
-
-
-    def _download_content(self,url):
-        grabber = HTMLGrabber()
-        self.content = grabber.retrieve(url)
-        self.soup = BeautifulSoup(self.content,convertEntities=BeautifulStoneSoup.HTML_ENTITIES)
-
-    def parse_basic(self):
-        self._parse_basic()
-
-    def _parse_basic(self):
-        """Parse basic information about movie or person. Eg. title, year, aka"""
-        raise NotImplementedError('override this method')
-
-
-class HTMLGrabber(object):
-    def __init__(self, *args, **kwargs):
-        self.headers = []
-        self.set_header('User-agent', 'Googlebot/2.1 (+http://www.google.com/bot.html)')
-        self.set_header('Referer', 'http://www.filmweb.pl/')
-        self.set_header('Cookie', 'welcomeScreenNew=welcomeScreen')
-
-    def set_header(self, header, value):
-        """Set a header."""
-        self.headers.append((header, value))
-
-    def get_headers(self):
-        return self.headers
-
-    def encode_string(self,string):
-        return urllib.quote(string.decode("utf8"))
-
-    def open(self, url):
-        opener = urllib2.build_opener()
-        opener.addheaders = self.get_headers()
-        try:
-            return opener.open(url)
-        except urllib2.HTTPError, urllib2.URLError:
-            raise FilmwebDataAccessError()
-
-    def retrieve(self,url):
-        return self.open(url).read()
-

@@ -1,13 +1,12 @@
 # coding=utf-8
 import re
-from urlparse import urljoin
 from BeautifulSoup import BeautifulStoneSoup, BeautifulSoup
 from filmweb.Person import Person
-from filmweb.parser import HTMLGrabber, ObjectParser
-from filmweb.vars import filmweb_root
+from filmweb.parser.HTMLGrabber import HTMLGrabber
+from filmweb.parser.ObjectParser import ObjectParser
+
 
 class MovieParser(ObjectParser):
-
 
     def removeTag(self,soup, tagname):
         for tag in soup.findAll(tagname):
@@ -15,27 +14,39 @@ class MovieParser(ObjectParser):
             parent = tag.parent
             tag.extract()
 
+    def _get_text_or_none(self,var,typ='str'):
+        if typ=='int':
+            try:
+                return int(var.text)
+            except:
+                return 0
+        else:
+            try:
+                return var.text
+            except:
+                return ''
+
     def _parse_basic(self):
+        dic = {}
+        t = self.soup.find('h1',{'class':'pageTitle'})
+        title =  self.soup.find('h1',{'class':'pageTitle'})
+        dic['title'] = self._get_text_or_none(title)
 
-        title =  self.soup.find('h1',{'class':'pageTitle'}).text
-        self.obj.set_title(title)
-        self.obj['title'] = title
-
-
-        year = self.soup.find('span',{'class':'filmYear'}).text
-        self.obj['year'] = year
+        year = self.soup.find('span',{'class':'filmYear'})
+        dic['year'] = self._get_text_or_none(year,'int')
 
         s = self.soup.find('h2',{'class':'origTitle'})
         self.removeTag(s,"span")
-        title_original = s.text
-        self.obj['title_original'] = title_original
+        dic['title_original'] = self._get_text_or_none(s)
 
-        desc = self.soup.find('span',{'class':"filmDescrBg"}).text
-        self.obj['desc'] = desc
+        desc = self.soup.find('span',{'class':"filmDescrBg"})
+        dic['desc'] = desc
 
         poster = self.soup.find('a',{'class':'film_mini'})
         poster_img = poster['href']
-        self.obj['poster'] = poster_img
+        dic['poster'] = poster_img
+
+        return dic
 
 
     def parse_cast(self):

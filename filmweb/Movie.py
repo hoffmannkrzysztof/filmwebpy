@@ -1,6 +1,7 @@
 # coding=utf-8
 from filmweb.addon import BaseObject
 import sys
+from filmweb.parser.MovieParser import MovieParser
 from filmweb.vars import filmweb_movie_link
 
 class Movie(BaseObject):
@@ -22,6 +23,9 @@ class Movie(BaseObject):
                         if cast.isSame(item): return True
 
         return False
+
+    def _parser(self):
+        return MovieParser(self)
 
     def _get_url(self):
         from filmweb.parser import HTMLGrabber
