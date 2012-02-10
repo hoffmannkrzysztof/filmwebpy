@@ -105,3 +105,13 @@ class MovieParser(ObjectParser):
         for photo in photoList("a",{'class':"phNoImg2"}):
             images.append({'href':photo['href'],'thumb':photo.contents[1]['src']})
         return images
+
+    def parse_posters(self):
+        grabber = HTMLGrabber()
+        content = grabber.retrieve( self.obj.url+"/posters" )
+        soup = BeautifulSoup(content,convertEntities=BeautifulStoneSoup.HTML_ENTITIES )
+        photoList = soup.find("div",{'class':'posters comBox'})
+        images = []
+        for photo in photoList("img",{'class':"lbProxy"}):
+            images.append({'href':photo['src'].replace(".2.jpg",'.3.jpg'),'thumb':photo['src']})
+        return images

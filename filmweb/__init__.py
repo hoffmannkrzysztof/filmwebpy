@@ -2,7 +2,7 @@
 from filmweb._exceptions import FilmwebParserError
 from filmweb.parser import FilmwebHTTP
 
-def Filmweb(access=None):
+def Filmweb(access='http'):
 
     if access == 'http':
         return FilmwebHTTP()
