@@ -8,15 +8,3 @@ def Filmweb(access=None):
         return FilmwebHTTP()
     else:
         raise FilmwebParserError('Unknown data system: %s' % access)
-
-
-def main():
-    fa = Filmweb('http')
-
-
-
-
-
-
-if __name__ == "__main__":
-    main()

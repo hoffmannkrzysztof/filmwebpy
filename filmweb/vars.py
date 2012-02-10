@@ -3,8 +3,6 @@
 
 filmweb_root = 'http://www.filmweb.pl'
 
-
-
 filmweb_movie_link = filmweb_root+"/film/%s-%d-%d" #name,year,id
 
 filmweb_search = filmweb_root+'/search?q=%s&page=%d'

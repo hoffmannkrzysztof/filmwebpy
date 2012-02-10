@@ -6,7 +6,7 @@ from filmweb.Person import Person
 from filmweb.vars import filmweb_movie_search, filmweb_person_link
 import re
 from filmweb.parser.HTMLGrabber import HTMLGrabber
-from vars import filmweb_search
+from filmweb.vars import filmweb_search
 
 class FilmwebHTTP(object):
 
