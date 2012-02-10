@@ -22,7 +22,6 @@ class HTMLGrabber(object):
         return urllib.quote(string.encode("utf-8"))
 
     def open(self, url):
-        print "GET: "+url
         opener = urllib2.build_opener()
         opener.addheaders = self.get_headers()
         try:
