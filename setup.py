@@ -1,10 +1,6 @@
-from setuptools import setup, find_packages
-import os
-
-from distutils.core import Extension
+from setuptools import setup
 
 version = '0.1'
-
 
 setup(name='filmwebpy',
     version=version,
@@ -18,7 +14,7 @@ setup(name='filmwebpy',
     author_email='krzysiekpl@gmail.com',
     url='http://github.com/krzysiekpl/filmwebpy',
     license='GPL',
-    packages=find_packages(),
+    packages=['filmweb',],
     namespace_packages=[],
     include_package_data=True,
     zip_safe=False,
