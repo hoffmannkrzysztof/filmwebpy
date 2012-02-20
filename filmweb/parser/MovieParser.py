@@ -63,7 +63,7 @@ class MovieParser(ObjectParser):
                         if field.name == 'div':
                             role = field.text
                             if role:
-                                role = role.replace("(").replace(")")
+                                role = role.replace("(","").replace(")","")
                         elif not field.has_key('class'):
                             name = field.text
 
