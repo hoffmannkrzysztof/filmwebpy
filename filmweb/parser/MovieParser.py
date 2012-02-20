@@ -4,6 +4,7 @@ from BeautifulSoup import BeautifulStoneSoup, BeautifulSoup
 from filmweb.Person import Person
 from filmweb.parser.HTMLGrabber import HTMLGrabber
 from filmweb.parser.ObjectParser import ObjectParser
+from filmweb.func import get_text_or_none
 
 
 class MovieParser(ObjectParser):
@@ -14,40 +15,35 @@ class MovieParser(ObjectParser):
             parent = tag.parent
             tag.extract()
 
-    def _get_text_or_none(self,var,typ='str'):
-        if typ=='int':
-            try:
-                return int(var.text)
-            except:
-                return 0
-        else:
-            try:
-                return var.text
-            except:
-                return ''
 
     def _parse_basic(self):
         dic = {}
         t = self.soup.find('h1',{'class':'pageTitle'})
         title =  self.soup.find('h1',{'class':'pageTitle'})
-        dic['title'] = self._get_text_or_none(title)
+        dic['title'] = get_text_or_none(title)
 
         year = self.soup.find('span',{'class':'filmYear'})
-        dic['year'] = self._get_text_or_none(year,'int')
+        dic['year'] = get_text_or_none(year,'int')
 
         s = self.soup.find('h2',{'class':'origTitle'})
         self.removeTag(s,"span")
-        dic['title_original'] = self._get_text_or_none(s)
+        dic['title_original'] = get_text_or_none(s)
 
         desc = self.soup.find('span',{'class':"filmDescrBg"})
         dic['desc'] = desc
 
         poster = self.soup.find('a',{'class':'film_mini'})
-        poster_img = poster['href']
-        dic['poster'] = poster_img
+        if poster:
+            poster_img = poster['href']
+            dic['poster'] = poster_img
+        else:
+            dic['poster'] = None
 
         return dic
 
+    def parse_real_url(self):
+        if self.obj.objID and self.obj.url is None:
+            return self.obj.get_url()
 
     def parse_cast(self):
         grabber = HTMLGrabber()
@@ -66,11 +62,16 @@ class MovieParser(ObjectParser):
                     for field in fields:
                         if field.name == 'div':
                             role = field.text
+                            if role:
+                                role = role.replace("(").replace(")")
                         elif not field.has_key('class'):
                             name = field.text
 
                     patternlink = "/person/(.+)-(?P<id>[0-9]*)"
                     patternimg = "http://1.fwcdn.pl/p/([0-9]{2})/([0-9]{2})/(?P<id>[0-9]*)/([0-9]*).([0-3]*).jpg"
+
+                    h3 = person.find("h3")
+                    href = h3.find("a")['href']
 
                     results = re.search(patternlink,unicode(person.extract()))
                     if results:
@@ -78,7 +79,7 @@ class MovieParser(ObjectParser):
                     else:
                         results = re.search(patternimg,unicode(person.extract()))
                         id = results.group("id")
-                    personList.append( Person(id,title=name,roleType=roleType,roleName=role) )
+                    personList.append( Person(id,title=name,roleType=roleType,roleName=role,url=href) )
         return personList
 
     def parse_additionalinfo(self):

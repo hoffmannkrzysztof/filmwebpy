@@ -11,10 +11,9 @@ class BaseObject(object):
         self.set_url(url)
         self.parser_obj = self.parser()
         self.set_title(title)
-        self.roleName = roleName
-        self.roleType = roleType
 
-
+        self['roleName'] = roleName
+        self['roleType'] = roleType
 
     def reset(self):
         self.data = {}
@@ -22,19 +21,31 @@ class BaseObject(object):
         self.title = None
         self.url = None
 
+    def get(self,key,default=None):
+        try:
+            if self[key]:
+                return self[key]
+            else:
+                return default
+        except:
+            return default
+
     def __getitem__(self, key):
         """Return the value for a given key"""
 
         if self.data.has_key(key):
             return self.data[key]
         else:
-            if key in ('title','year','title_original','desc','poster'):
+
+            if key in ('title','year','title_original','desc','poster','birthdate','deaddate'):
                 dic = self.parser_obj.parse_basic()
                 self.set_data(dic)
+            elif key == 'url':
+                self[key] = self.parser_obj.parse_real_url()
             else:
                 method = getattr(self.parser_obj, 'parse_'+key)
                 self[key] = method()
-            return self[key]
+            return self.data[key]
 
     def __setitem__(self, key, item):
         """Store the item with the given key."""
@@ -56,6 +67,8 @@ class BaseObject(object):
     def set_url(self,url):
         if url is not None:
             self.url = urljoin(filmweb_root,url).strip()
+        else:
+            self.url = self.get_url()
 
     def _get_url(self):
         """Return movie, person url"""
@@ -78,6 +91,7 @@ class BaseObject(object):
             self.title = self['title']
 
         self.title = self.title.strip()
+        self['title'] = self.title
 
     def isSame(self,item):
         return self.objID == self.objID
