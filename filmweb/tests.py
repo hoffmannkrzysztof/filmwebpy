@@ -90,7 +90,7 @@ class Osobaparser(unittest.TestCase):
         self.assertEqual(self.osoba['birthdate'].month,2)
         self.assertEqual(self.osoba['birthdate'].day,9)
         self.assertEqual(self.osoba['birthdate'].year,1941)
-        self.assertIsNotNone(self.osoba['poster'])
+        self.assertIsNotNone(self.osoba.get('poster'))
 
 
     def test_in(self):
@@ -103,6 +103,15 @@ class Osobaparser(unittest.TestCase):
 
         film = filmography[0]
         self.assertEqual(film.objID,635169)
+
+class PosterEmptyTest(unittest.TestCase):
+    def setUp(self):
+        self.fa = Filmweb('http')
+        self.osoba = self.fa.get_person(289000)
+
+    def test_poster_and_name(self):
+        self.assertIsNone(self.osoba.get('poster'))
+        self.assertEqual(self.osoba['title'],u'David E. Browning')
 
 
 
