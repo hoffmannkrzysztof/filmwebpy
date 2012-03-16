@@ -19,6 +19,16 @@ def get_real_id(*strings):
     return 0
 
 
+def canonicalname(title):
+
+    splited = title.split(" ")
+    name = splited[0]
+    surname = splited[1:]
+    surname.extend( [name] )
+
+    return " ".join( surname )
+
+
 def get_text_or_none(var,typ='str'):
     if typ=='int':
         try:

@@ -3,15 +3,18 @@
 from filmweb.parser.ObjectParser import ObjectParser
 from filmweb.func import get_real_id
 from dateutil import parser
-from filmweb.func import get_text_or_none
+from filmweb.func import get_text_or_none,canonicalname
 
 class PersonParser(ObjectParser):
+
+
 
     def _parse_basic(self):
         dic = {}
 
         title =  self.soup.find('h1',{'class':'pageTitle'})
         dic['title'] = get_text_or_none(title)
+        dic['canonicalname'] = canonicalname(dic['title'])
 
         more_info = self.soup.find("div","additional-info comBox")
 
@@ -35,7 +38,7 @@ class PersonParser(ObjectParser):
         return dic
 
     def parse_filmography(self):
-        from Movie import Movie
+        from filmweb.Movie import Movie
         movie_links = self.soup.findAll("a","filmographyFilmTitle")
         movies = []
         for a in movie_links:

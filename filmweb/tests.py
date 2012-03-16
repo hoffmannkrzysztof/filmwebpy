@@ -114,4 +114,21 @@ class PosterEmptyTest(unittest.TestCase):
         self.assertEqual(self.osoba['title'],u'David E. Browning')
 
 
+class CanonicalnameTest(unittest.TestCase):
+    def setUp(self):
+        self.fa = Filmweb('http')
+        self.karewicz = self.fa.get_person(461) #Emil Karewicz
+        self.kot = self.fa.get_person(148066) #tomasz kot
+        self.zmuda =  self.fa.get_person(464409) #marta zmuda trzebiatowska
+        self.niro =  self.fa.get_person(123) #Robert De Niro
+        self.hopkins = self.fa.get_person(48) #Anthony Hopkins I
+
+    def test_names(self):
+        self.assertEqual(self.karewicz['canonicalname'],u'Karewicz Emil')
+        self.assertEqual(self.kot['canonicalname'],u'Kot Tomasz')
+        self.assertEqual(self.zmuda['canonicalname'],u'Żmuda-Trzebiatowska Marta')
+        self.assertEqual(self.niro['canonicalname'],u'De Niro Robert')
+        self.assertEqual(self.hopkins['canonicalname'],u'Hopkins I Anthony')
+
+
 
