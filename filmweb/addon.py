@@ -37,7 +37,7 @@ class BaseObject(object):
             return self.data[key]
         else:
 
-            if key in ('title','year','title_original','desc','poster','birthdate','deaddate'):
+            if key in ('title','year','title_original','desc','poster','birthdate','deaddate','canonicalname'):
                 dic = self.parser_obj.parse_basic()
                 self.set_data(dic)
             elif key == 'url':
