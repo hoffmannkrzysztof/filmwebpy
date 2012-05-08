@@ -29,7 +29,7 @@ class FilmwebHTTP(object):
             title = a.text
             url = a['href']
             # have to do another check because sometimes url doesnt provide movieID
-            aimg = li.find('a',{'class': 'fNoImg1'})
+            aimg = li.find('a',{'class': 'fNoImg25'})
             if aimg is not None:
                 img = aimg.find("img")
                 movieID = get_real_id(url,img['src'])
@@ -59,7 +59,7 @@ class FilmwebHTTP(object):
             title = a.text
             url = a['href']
             # have to do another check because sometimes url doesnt provide movieID
-            aimg = li.find('a',{'class': 'pNoImg1'})
+            aimg = li.find('a',{'class': 'pNoImg3'})
             if aimg is not None:
                 img = aimg.find('img')
                 personID = get_real_id(url,img['src'])

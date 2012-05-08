@@ -132,3 +132,13 @@ class CanonicalnameTest(unittest.TestCase):
 
 
 
+class NadZycieTest(unittest.TestCase):
+    def setUp(self):
+        self.fa = Filmweb('http')
+        self.movie = self.fa.get_movie(651141)
+
+    def test_cast(self):
+        self.assertIsNotNone( self.movie['cast'] )
+        p = self.movie['cast'][3]
+        self.assertEqual(p['roleType'],u'aktor')
+

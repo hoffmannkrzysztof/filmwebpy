@@ -55,6 +55,7 @@ class MovieParser(ObjectParser):
         for cast in castGroups:
             if cast['class'] == 'toggleUp':
                 roleType = cast.text
+                roleType = roleType.split("/")[0].strip()
             elif cast['class'] == 'dataBox3rd':
                 castList = cast.findAll("li",id=re.compile("roleLine([0-9]*)"))
                 for person in castList:
