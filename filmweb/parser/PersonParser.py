@@ -1,4 +1,5 @@
 # coding=utf-8
+import datetime
 
 from filmweb.parser.ObjectParser import ObjectParser
 from filmweb.func import get_real_id
@@ -21,13 +22,13 @@ class PersonParser(ObjectParser):
         if more_info:
             more_info = more_info.find("dl")
             for more in more_info.findAll('dt'):
-                dic[ more.text.replace(":","") ] = more.nextSibling.text
+                dic[ more.text.replace(":","") ] = more.nextSibling.contents[0]
 
             if dic.get('data urodzenia',None):
-                dic['birthdate'] = parser.parse(dic['data urodzenia'])
+                dic['birthdate'] = datetime.datetime.strptime(dic['data urodzenia'],"%Y-%m-%d" ) #1923-03-13
 
             if dic.get('data śmierci',None):
-                dic['deaddate'] = parser.parse(dic['data śmierci'])
+                dic['deaddate'] = datetime.strptime(dic['data śmierci'],"%Y-%m-%d" )
 
 
         poster = self.soup.find("img","personBigPhoto")

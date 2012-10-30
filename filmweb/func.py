@@ -32,7 +32,8 @@ def canonicalname(title):
 def get_text_or_none(var,typ='str'):
     if typ=='int':
         try:
-            return int(var.text)
+            t = var.text.replace("(","").replace(")","")
+            return int( t )
         except:
             return 0
     else:

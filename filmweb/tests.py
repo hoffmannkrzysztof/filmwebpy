@@ -69,7 +69,7 @@ class Movieparser(unittest.TestCase):
     def test_infos(self):
         self.assertEqual( len(self.movie['additionalinfo']), 4)
 
-        self.assertEqual( len(self.movie['basicinfo']), 6)
+        self.assertEqual( len(self.movie['basicinfo']), 5)
 
         self.assertEqual( len(self.movie['photos']), 51 )
 
@@ -126,7 +126,7 @@ class CanonicalnameTest(unittest.TestCase):
     def test_names(self):
         self.assertEqual(self.karewicz['canonicalname'],u'Karewicz Emil')
         self.assertEqual(self.kot['canonicalname'],u'Kot Tomasz')
-        self.assertEqual(self.zmuda['canonicalname'],u'Żmuda-Trzebiatowska Marta')
+        self.assertEqual(self.zmuda['canonicalname'],u'Żmuda Trzebiatowska Marta')
         self.assertEqual(self.niro['canonicalname'],u'De Niro Robert')
         self.assertEqual(self.hopkins['canonicalname'],u'Hopkins I Anthony')
 
