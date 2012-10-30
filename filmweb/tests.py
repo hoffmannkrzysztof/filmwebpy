@@ -142,3 +142,7 @@ class NadZycieTest(unittest.TestCase):
         p = self.movie['cast'][3]
         self.assertEqual(p['roleType'],u'aktor')
 
+    def test_posters(self):
+        self.assertEqual( len(self.movie['posters']), 1)
+
+
