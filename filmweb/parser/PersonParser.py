@@ -25,10 +25,16 @@ class PersonParser(ObjectParser):
                 dic[ more.text.replace(":","") ] = more.nextSibling.contents[0]
 
             if dic.get('data urodzenia',None):
-                dic['birthdate'] = datetime.datetime.strptime(dic['data urodzenia'],"%Y-%m-%d" ) #1923-03-13
+                try:
+                    dic['birthdate'] = datetime.datetime.strptime(dic['data urodzenia'],"%Y-%m-%d" ) #1923-03-13
+                except ValueError:
+                    dic['birthdate'] = None
 
             if dic.get('data śmierci',None):
-                dic['deaddate'] = datetime.strptime(dic['data śmierci'],"%Y-%m-%d" )
+                try:
+                    dic['deaddate'] = datetime.strptime(dic['data śmierci'],"%Y-%m-%d" )
+                except ValueError:
+                    dic['deaddate'] = None
 
 
         poster = self.soup.find("img","personBigPhoto")

@@ -146,3 +146,14 @@ class NadZycieTest(unittest.TestCase):
         self.assertEqual( len(self.movie['posters']), 1)
 
 
+class IxjanaTest(unittest.TestCase):
+    def setUp(self):
+        self.fa = Filmweb('http')
+        self.movie = self.fa.get_movie(598624)
+
+    def test_cast(self):
+        self.assertIsNotNone( self.movie['cast'] )
+        p = self.movie['cast'][5]
+        self.assertEqual(p['roleType'],u'aktor')
+
+
