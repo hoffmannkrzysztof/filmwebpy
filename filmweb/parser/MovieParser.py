@@ -44,6 +44,10 @@ class MovieParser(ObjectParser):
             dic['poster'] = None
 
         return dic
+        
+    def parse_genre(self):
+        genres = [i.text for i in self.soup.find('div',{'class':'filmInfo'}).findAll('a') if 'genre' in i['href']]
+        return genres
 
     def parse_real_url(self):
         if self.obj.objID and self.obj.url is None:
