@@ -85,7 +85,7 @@ class BaseObject(object):
 
     def set_title(self,title):
         if title is not None:
-            title = title.split("/")[-1]
+            title = title.split("/")[0]
             self.title = title
         else:
             self.title = self['title']

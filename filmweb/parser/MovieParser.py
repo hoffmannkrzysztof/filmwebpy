@@ -1,6 +1,6 @@
 # coding=utf-8
 import re
-from BeautifulSoup import BeautifulStoneSoup, BeautifulSoup
+from bs4 import BeautifulSoup
 from filmweb.Person import Person
 from filmweb.parser.HTMLGrabber import HTMLGrabber
 from filmweb.parser.ObjectParser import ObjectParser
@@ -19,10 +19,9 @@ class MovieParser(ObjectParser):
     def _parse_basic(self):
         dic = {}
 
-        filmTitle = self.soup.find("div",{'class':"filmTitle"})
+        filmTitle = self.soup.find("div",{'class':"filmMainHeader"})
+        title =  filmTitle.find('a')
 
-
-        title =  filmTitle.find('h1')
         dic['title'] = get_text_or_none(title)
 
         year = filmTitle.find('span',{'id':'filmYear'})
@@ -56,7 +55,7 @@ class MovieParser(ObjectParser):
     def parse_cast(self):
         grabber = HTMLGrabber()
         content = grabber.retrieve( self.obj.url+"/cast" )
-        soup = BeautifulSoup(content,convertEntities=BeautifulStoneSoup.HTML_ENTITIES )
+        soup = BeautifulSoup(content)
         castList = soup.find("div",{'class':'filmSubpageContentWrapper'})
         castGroups = castList.findAll(["dd","dt"])
         personList = []
@@ -108,7 +107,7 @@ class MovieParser(ObjectParser):
     def parse_photos(self):
         grabber = HTMLGrabber()
         content = grabber.retrieve( self.obj.url+"/photos" )
-        soup = BeautifulSoup(content,convertEntities=BeautifulStoneSoup.HTML_ENTITIES )
+        soup = BeautifulSoup(content)
         photoList = soup.find("ul",'block-list photosList')
         images = []
         for photo in photoList.findAll("img"):
@@ -118,7 +117,7 @@ class MovieParser(ObjectParser):
     def parse_posters(self):
         grabber = HTMLGrabber()
         content = grabber.retrieve( self.obj.url+"/posters" )
-        soup = BeautifulSoup(content,convertEntities=BeautifulStoneSoup.HTML_ENTITIES )
+        soup = BeautifulSoup(content)
         photoList = soup.find("ul",'block-list postersList')
         images = []
         for photo in photoList("img",{'class':"lbProxy"}):

@@ -1,5 +1,5 @@
 # coding=utf-8
-from BeautifulSoup import BeautifulSoup,BeautifulStoneSoup
+from bs4 import BeautifulSoup
 
 class ObjectParser(object):
 
@@ -26,7 +26,7 @@ class ObjectParser(object):
 
         grabber = HTMLGrabber()
         self._content = grabber.retrieve(url)
-        self._soup = BeautifulSoup(self.content,convertEntities=BeautifulStoneSoup.HTML_ENTITIES)
+        self._soup = BeautifulSoup(self.content)
 
     def parse_basic(self):
         return self._parse_basic()

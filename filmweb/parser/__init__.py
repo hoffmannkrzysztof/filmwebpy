@@ -1,7 +1,7 @@
 # coding=utf-8
 import re
 
-from BeautifulSoup import BeautifulStoneSoup
+from bs4 import BeautifulSoup
 from filmweb.Movie import Movie
 from filmweb.Person import Person
 from filmweb.vars import filmweb_movie_search, filmweb_person_link
@@ -22,7 +22,7 @@ class FilmwebHTTP(object):
 
         #for type in ['film','serial']:
         content = grabber.retrieve(filmweb_search % (p_title,1)) #@Make search more pages not only 1
-        soup=BeautifulStoneSoup(content,convertEntities=BeautifulStoneSoup.HTML_ENTITIES )
+        soup = BeautifulSoup(content)
         li_list.extend( soup.findAll('div', {'class':'hitDescWrapper'}) )
         img_list.extend( soup.findAll('div', {'class':'hitImage'}) )
 
@@ -54,7 +54,7 @@ class FilmwebHTTP(object):
         img_list = []
 
         content = grabber.retrieve(filmweb_person_search % (p_title,1)) #@Make search more pages not only 1
-        soup=BeautifulStoneSoup(content,convertEntities=BeautifulStoneSoup.HTML_ENTITIES )
+        soup=BeautifulSoup(content)
         li_list.extend( soup.findAll('div', {'class':'hitDescWrapper'}) )
         img_list.extend( soup.findAll('div', {'class':'hitImage'}) )
 
