@@ -32,8 +32,8 @@ class MovieParser(ObjectParser):
         #self.removeTag(s,"span")
         dic['title_original'] = get_text_or_none(s)
 
-        desc = self.soup.find('span',{'class':"filmPlot"})
-        dic['desc'] = desc
+        desc = self.soup.find('div',{'class':"filmPlot"})
+        dic['desc'] = get_text_or_none(desc)
 
         poster = self.soup.find('div',{'class':'posterLightbox'})
         if poster:

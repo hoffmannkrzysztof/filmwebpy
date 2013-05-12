@@ -32,10 +32,10 @@ def canonicalname(title):
 def get_text_or_none(var,typ='str'):
     if typ=='int':
         try:
-            t = var.text.replace("(","").replace(")","")
-            return int( t )
+            t = var.text[var.text.find('(')+1:var.text.find(')')]
+            return t
         except:
-            return 0
+            return ''
     else:
         try:
             return var.text
