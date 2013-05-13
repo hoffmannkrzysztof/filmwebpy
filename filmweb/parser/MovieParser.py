@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from filmweb.Person import Person
 from filmweb.parser.HTMLGrabber import HTMLGrabber
 from filmweb.parser.ObjectParser import ObjectParser
-from filmweb.func import get_text_or_none
+from filmweb.func import get_text_or_none, get_datetime_or_none
 
 
 class MovieParser(ObjectParser):
@@ -51,6 +51,37 @@ class MovieParser(ObjectParser):
     def parse_real_url(self):
         if self.obj.objID and self.obj.url is None:
             return self.obj.get_url()
+
+    def parse_episodes(self):
+        grabber = HTMLGrabber()
+        content = grabber.retrieve( self.obj.url+"/episodes" )
+        soup = BeautifulSoup(content)
+        seasons = soup.findAll("table")
+        episodeList = []
+        for season in seasons:
+            try:
+                seasonNumber = season.find("h3").text.split()
+                if seasonNumber[0] == 'sezon':
+                    seasonNumber = int(seasonNumber[1])
+                else:
+                    seasonNumber = 0
+            except:
+                seasonNumber = 0
+
+            episodes = season.findAll("td")
+            for i in range(0, len(episodes), 3):
+
+                number = episodes[i].text.split()
+                if number[0] == 'odcinek':
+                    number = int(number[1])
+                else:
+                    number = 0
+
+                episodeDate = get_datetime_or_none(episodes[i+1].find('div'))
+                episodeName = episodes[i+2].text
+                episodeList.append({'season':seasonNumber, 'number':number, 'date':episodeDate, 'name': episodeName})
+        return episodeList
+
 
     def parse_cast(self):
         grabber = HTMLGrabber()

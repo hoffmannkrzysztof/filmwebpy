@@ -2,6 +2,7 @@
 import unittest
 from filmweb import Filmweb
 import Levenshtein
+from datetime import datetime
 
 
 class Serialparser(unittest.TestCase):
@@ -157,3 +158,13 @@ class IxjanaTest(unittest.TestCase):
         self.assertEqual(p['roleType'],u'aktor')
 
 
+class EpisodesTest(unittest.TestCase):
+    def setUp(self):
+        self.fa = Filmweb('http')
+        self.movie = self.fa.get_movie(130177) #Dr House
+    def test_episode(self):
+        episode = self.movie['episodes'][47]
+        self.assertEqual(episode['name'],u'Cane & Able')
+        self.assertEqual(episode['season'],3)
+        self.assertEqual(episode['number'],2)
+        self.assertEqual(episode['date'],datetime.strptime("2006-09-12","%Y-%m-%d" ))
