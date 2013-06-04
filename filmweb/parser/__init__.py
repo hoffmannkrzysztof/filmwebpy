@@ -1,7 +1,7 @@
 # coding=utf-8
 import re
 
-from BeautifulSoup import BeautifulStoneSoup
+from bs4 import BeautifulSoup
 from filmweb.Movie import Movie
 from filmweb.Person import Person
 from filmweb.vars import filmweb_movie_search, filmweb_person_link
@@ -18,18 +18,20 @@ class FilmwebHTTP(object):
         grabber = HTMLGrabber()
         p_title = grabber.encode_string(title)
         li_list = []
+        img_list = []
 
         #for type in ['film','serial']:
         content = grabber.retrieve(filmweb_search % (p_title,1)) #@Make search more pages not only 1
-        soup=BeautifulStoneSoup(content,convertEntities=BeautifulStoneSoup.HTML_ENTITIES )
-        li_list.extend( soup.findAll('li',{'class':'searchResult'}) )
+        soup = BeautifulSoup(content)
+        li_list.extend( soup.findAll('div', {'class':'hitDescWrapper'}) )
+        img_list.extend( soup.findAll('div', {'class':'hitImage'}) )
 
-        for li in li_list:
-            a = li.find('a',{'class':'searchResultTitle'})
+        for i, li in enumerate(li_list):
+            a = li.find('a',{'class':'hdr hdr-medium'})
             title = a.text
             url = a['href']
             # have to do another check because sometimes url doesnt provide movieID
-            aimg = li.find('a',{'class': 'fNoImg25'})
+            aimg = img_list[i].find('a')
             if aimg is not None:
                 img = aimg.find("img")
                 movieID = get_real_id(url,img['src'])
@@ -49,17 +51,20 @@ class FilmwebHTTP(object):
         grabber = HTMLGrabber()
         p_title = grabber.encode_string(title)
         li_list = []
+        img_list = []
 
         content = grabber.retrieve(filmweb_person_search % (p_title,1)) #@Make search more pages not only 1
-        soup=BeautifulStoneSoup(content,convertEntities=BeautifulStoneSoup.HTML_ENTITIES )
-        li_list.extend( soup.findAll('li',{'class':'searchResult'}) )
+        soup=BeautifulSoup(content)
+        li_list.extend( soup.findAll('div', {'class':'hitDescWrapper'}) )
+        img_list.extend( soup.findAll('div', {'class':'hitImage'}) )
 
-        for li in li_list:
-            a = li.find('a',{'class':'searchResultTitle'})
+
+        for i, li in enumerate(li_list):
+            a = li.find('a',{'class':'hdr hdr-medium'})
             title = a.text
             url = a['href']
             # have to do another check because sometimes url doesnt provide movieID
-            aimg = li.find('a',{'class': 'pNoImg3'})
+            aimg = img_list[i].find('a')
             if aimg is not None:
                 img = aimg.find('img')
                 personID = get_real_id(url,img['src'])

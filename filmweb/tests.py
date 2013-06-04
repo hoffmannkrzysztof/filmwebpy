@@ -1,7 +1,8 @@
-# coding=utf-8
+﻿# coding=utf-8
 import unittest
 from filmweb import Filmweb
 import Levenshtein
+from datetime import datetime
 
 
 class Serialparser(unittest.TestCase):
@@ -14,7 +15,7 @@ class Serialparser(unittest.TestCase):
         self.assertTrue( self.serial in found_movies )
 
     def test_year(self):
-        self.assertEqual( self.serial['year'], '1994 - 2004')
+        self.assertEqual( self.serial['year'], '1994-2004')
 
 
 
@@ -71,13 +72,13 @@ class Movieparser(unittest.TestCase):
 
         self.assertEqual( len(self.movie['basicinfo']), 5)
 
-        self.assertEqual( len(self.movie['photos']), 51 )
+        self.assertEqual( len(self.movie['photos']), 45 )
 
         self.assertEqual('Leon zawodowiec',self.movie.title,)
         #self.assertEqual('Léon',self.movie['title_original'],)
 
     def test_year(self):
-        self.assertEqual( self.movie['year'], 1994)
+        self.assertEqual( self.movie['year'], '1994')
 
 
 class Osobaparser(unittest.TestCase):
@@ -157,3 +158,13 @@ class IxjanaTest(unittest.TestCase):
         self.assertEqual(p['roleType'],u'aktor')
 
 
+class EpisodesTest(unittest.TestCase):
+    def setUp(self):
+        self.fa = Filmweb('http')
+        self.movie = self.fa.get_movie(130177) #Dr House
+    def test_episode(self):
+        episode = self.movie['episodes'][47]
+        self.assertEqual(episode['name'],u'Cane & Able')
+        self.assertEqual(episode['season'],3)
+        self.assertEqual(episode['number'],2)
+        self.assertEqual(episode['date'],datetime.strptime("2006-09-12","%Y-%m-%d" ))

@@ -1,4 +1,4 @@
-# coding=utf-8
+﻿# coding=utf-8
 import datetime
 
 from filmweb.parser.ObjectParser import ObjectParser
@@ -13,16 +13,26 @@ class PersonParser(ObjectParser):
     def _parse_basic(self):
         dic = {}
 
-        title =  self.soup.find('h1',{'class':'pageTitle'})
-        dic['title'] = get_text_or_none(title)
+        poster = self.soup.find("img","personBigPhoto")
+        if poster['src'].find("NoImg") == -1:
+            dic['poster'] = poster['src']
+        else:
+            dic['poster'] = None
+
+        title = poster['alt'].strip()
+        dic['title'] = title
         dic['canonicalname'] = canonicalname(dic['title'])
 
-        more_info = self.soup.find("div","additional-info comBox")
+        more_info = self.soup.find("div","personInfo")
 
         if more_info:
-            more_info = more_info.find("dl")
-            for more in more_info.findAll('dt'):
-                dic[ more.text.replace(":","") ] = more.nextSibling.contents[0]
+            for more in more_info.findAll('tr'):
+                name = more.find('th')
+                value = more.find('td')
+                js = value.find('script')
+                if js:
+                    js.extract()
+                dic[ name.text.replace(":","") ] = value.text
 
             if dic.get('data urodzenia',None):
                 try:
@@ -35,20 +45,15 @@ class PersonParser(ObjectParser):
                     dic['deaddate'] = datetime.strptime(dic['data śmierci'],"%Y-%m-%d" )
                 except ValueError:
                     dic['deaddate'] = None
-
-
-        poster = self.soup.find("img","personBigPhoto")
-        if poster is not None:
-            if poster['src'].find("NoImg") == -1:
-                dic['poster'] = poster['src']
-
         return dic
 
     def parse_filmography(self):
         from filmweb.Movie import Movie
-        movie_links = self.soup.findAll("a","filmographyFilmTitle")
+        movie_links = self.soup.findAll("td",{'class':"filmTitleCol"})
+
         movies = []
-        for a in movie_links:
+        for movie_link in movie_links:
+            a = movie_link.find("a")
             movieID = get_real_id(a['href'])
             movies.append( Movie(objID=movieID,title=a.text,url=a['href']) )
         return movies

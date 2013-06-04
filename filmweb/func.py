@@ -1,4 +1,6 @@
+﻿# coding=utf-8
 import re
+from datetime import datetime
 
 def get_real_id(*strings):
     for text in strings:
@@ -32,12 +34,23 @@ def canonicalname(title):
 def get_text_or_none(var,typ='str'):
     if typ=='int':
         try:
-            t = var.text.replace("(","").replace(")","")
-            return int( t )
+            t = var.text[var.text.find('(')+1:var.text.find(')')]
+            return t
         except:
-            return 0
+            return ''
     else:
         try:
             return var.text
         except:
             return ''
+
+def get_datetime_or_none(txt):
+    MONTHS = {u'stycznia':1, u'lutego':2, u'marca':3, u'kwietnia':4, u'maja':5, u'czerwca':6,
+              u'lipca':7, u'sierpnia':8, u'września':9, u'października':10, u'listopada':11, u'grudnia':12
+             }
+    try:
+        list = txt.text.split()
+        month = MONTHS[list[1]]
+        return datetime.strptime("%s-%d-%s" % (list[2], month, list[0]),"%Y-%m-%d" )
+    except:
+        return None
