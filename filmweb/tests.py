@@ -29,12 +29,6 @@ class CheckMovieInfos(unittest.TestCase):
         found_movies = self.fa.search_movie(u'Dziewczyna z sąsiedztwa')
         self.assertTrue( self.movie in found_movies )
 
-    def test_levenstein(self):
-        org_title = u'The Girl Next Door'.replace("The","")
-        self.assertEqual('Girl Next Door, The',self.movie['title_original'])
-        self.assertEqual( Levenshtein.distance(org_title,self.movie['title_original'].replace("The","")) , 3 )
-
-
 
 class MovieNextTest(unittest.TestCase):
     def setUp(self):
@@ -103,7 +97,8 @@ class Osobaparser(unittest.TestCase):
         self.assertGreater(self.osoba['filmography'],0)
 
         film = filmography[0]
-        self.assertEqual(film.objID,635169)
+        self.assertEqual(film.objID, 694864)
+
 
 class PosterEmptyTest(unittest.TestCase):
     def setUp(self):
@@ -144,7 +139,7 @@ class NadZycieTest(unittest.TestCase):
         self.assertEqual(p['roleType'],u'aktor')
 
     def test_posters(self):
-        self.assertEqual( len(self.movie['posters']), 1)
+        self.assertEqual(len(self.movie['posters']), 2)
 
 
 class IxjanaTest(unittest.TestCase):

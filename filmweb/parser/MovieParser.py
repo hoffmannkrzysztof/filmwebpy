@@ -125,7 +125,8 @@ class MovieParser(ObjectParser):
         more_info = self.soup.find("div","pageBox sep-hr")
         more_info = more_info.find("dl")
         for more in more_info.findAll('dt'):
-            more_infos.append({'name':more.text.replace(":",""),'value':more.nextSibling.text})
+            if more.text != u'inne tytuły:':
+                more_infos.append({'name': more.text.replace(":", ""), 'value': more.nextSibling.text})
         return more_infos
 
     def parse_basicinfo(self):
