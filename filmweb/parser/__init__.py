@@ -46,6 +46,10 @@ class FilmwebHTTP(object):
         return [Movie(objID=movieID, title=title, url=url) for movieID, title, url in
                 self._search_movie(title, results)]
 
+
+    #def search_genre(self,genre):
+
+
     def _search_person(self, title, results=20):
         #http://www.filmweb.pl/search/person?q=Tom+Cruise
         """Return list of persons"""

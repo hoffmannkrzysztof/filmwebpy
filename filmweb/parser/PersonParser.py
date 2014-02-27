@@ -4,7 +4,8 @@ import datetime
 from filmweb.parser.ObjectParser import ObjectParser
 from filmweb.func import get_real_id
 from dateutil import parser
-from filmweb.func import get_text_or_none,canonicalname
+from filmweb.func import get_text_or_none, get_canonical_name
+
 
 class PersonParser(ObjectParser):
 
@@ -21,7 +22,7 @@ class PersonParser(ObjectParser):
 
         title = poster['alt'].strip()
         dic['title'] = title
-        dic['canonicalname'] = canonicalname(dic['title'])
+        dic['canonicalname'] = get_canonical_name(dic['title'])
 
         more_info = self.soup.find("div","personInfo")
 

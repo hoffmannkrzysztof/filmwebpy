@@ -27,7 +27,7 @@ def get_real_id(*strings):
     return 0
 
 
-def canonicalname(title):
+def get_canonical_name(title):
     splited = title.split(" ")
     name = splited[0]
     surname = splited[1:]
