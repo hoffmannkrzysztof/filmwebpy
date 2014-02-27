@@ -1,11 +1,9 @@
 # coding=utf-8
-import re
 
 from bs4 import BeautifulSoup
+
 from filmweb.Movie import Movie
 from filmweb.Person import Person
-from filmweb.vars import filmweb_movie_search, filmweb_person_link
-
 from filmweb.parser.HTMLGrabber import HTMLGrabber
 from filmweb.vars import filmweb_search
 from filmweb.vars import filmweb_person_search

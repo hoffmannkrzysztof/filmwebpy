@@ -1,12 +1,12 @@
 # coding=utf-8
 from bs4 import BeautifulSoup
 
-class ObjectParser(object):
 
+class ObjectParser(object):
     _soup = None
     _content = None
 
-    def __init__(self,obj):
+    def __init__(self, obj):
         self.obj = obj
 
     @property
@@ -21,7 +21,7 @@ class ObjectParser(object):
             self._download_content(self.obj.url)
         return self._soup
 
-    def _download_content(self,url):
+    def _download_content(self, url):
         from filmweb.parser.HTMLGrabber import HTMLGrabber
 
         grabber = HTMLGrabber()

@@ -1,7 +1,9 @@
 # coding=utf-8
-from filmweb._exceptions import FilmwebDataAccessError
 import urllib
 import urllib2
+
+from filmweb._exceptions import FilmwebDataAccessError
+
 
 class HTMLGrabber(object):
     def __init__(self, *args, **kwargs):
@@ -17,7 +19,7 @@ class HTMLGrabber(object):
     def get_headers(self):
         return self.headers
 
-    def encode_string(self,string):
+    def encode_string(self, string):
         return urllib.quote(string.encode("utf-8"))
 
     def open(self, url):
@@ -30,5 +32,5 @@ class HTMLGrabber(object):
         except ValueError:
             pass
 
-    def retrieve(self,url):
+    def retrieve(self, url):
         return self.open(url).read()

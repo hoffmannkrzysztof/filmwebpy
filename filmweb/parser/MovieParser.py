@@ -1,6 +1,8 @@
 # coding=utf-8
 import re
+
 from bs4 import BeautifulSoup
+
 from filmweb.Person import Person
 from filmweb.parser.HTMLGrabber import HTMLGrabber
 from filmweb.parser.ObjectParser import ObjectParser
@@ -8,8 +10,7 @@ from filmweb.func import get_text_or_none, get_datetime_or_none
 
 
 class MovieParser(ObjectParser):
-
-    def removeTag(self,soup, tagname):
+    def removeTag(self, soup, tagname):
         for tag in soup.findAll(tagname):
             contents = tag.contents
             parent = tag.parent
@@ -19,22 +20,22 @@ class MovieParser(ObjectParser):
     def _parse_basic(self):
         dic = {}
 
-        filmTitle = self.soup.find("div",{'class':"filmMainHeader"})
-        title =  filmTitle.find('a')
+        filmTitle = self.soup.find("div", {'class': "filmMainHeader"})
+        title = filmTitle.find('a')
 
         dic['title'] = get_text_or_none(title)
 
-        year = filmTitle.find('span',{'id':'filmYear'})
-        dic['year'] = get_text_or_none(year,'int')
+        year = filmTitle.find('span', {'id': 'filmYear'})
+        dic['year'] = get_text_or_none(year, 'int')
 
         s = filmTitle.find('h2')
         #self.removeTag(s,"span")
         dic['title_original'] = get_text_or_none(s)
 
-        desc = self.soup.find('div',{'class':"filmPlot"})
+        desc = self.soup.find('div', {'class': "filmPlot"})
         dic['desc'] = get_text_or_none(desc)
 
-        poster = self.soup.find('div',{'class':'posterLightbox'})
+        poster = self.soup.find('div', {'class': 'posterLightbox'})
         if poster:
             p = poster.find("a")
             poster_img = p['href']
@@ -43,9 +44,9 @@ class MovieParser(ObjectParser):
             dic['poster'] = None
 
         return dic
-        
+
     def parse_genre(self):
-        genres = [i.text for i in self.soup.find('div',{'class':'filmInfo'}).findAll('a') if 'genre' in i['href']]
+        genres = [i.text for i in self.soup.find('div', {'class': 'filmInfo'}).findAll('a') if 'genre' in i['href']]
         return genres
 
     def parse_real_url(self):
@@ -54,7 +55,7 @@ class MovieParser(ObjectParser):
 
     def parse_episodes(self):
         grabber = HTMLGrabber()
-        content = grabber.retrieve( self.obj.url+"/episodes" )
+        content = grabber.retrieve(self.obj.url + "/episodes")
         soup = BeautifulSoup(content)
         seasons = soup.findAll("table")
         episodeList = []
@@ -77,18 +78,18 @@ class MovieParser(ObjectParser):
                 else:
                     number = 0
 
-                episodeDate = get_datetime_or_none(episodes[i+1].find('div'))
-                episodeName = episodes[i+2].text
-                episodeList.append({'season':seasonNumber, 'number':number, 'date':episodeDate, 'name': episodeName})
+                episodeDate = get_datetime_or_none(episodes[i + 1].find('div'))
+                episodeName = episodes[i + 2].text
+                episodeList.append({'season': seasonNumber, 'number': number, 'date': episodeDate, 'name': episodeName})
         return episodeList
 
 
     def parse_cast(self):
         grabber = HTMLGrabber()
-        content = grabber.retrieve( self.obj.url+"/cast" )
+        content = grabber.retrieve(self.obj.url + "/cast")
         soup = BeautifulSoup(content)
-        castList = soup.find("div",{'class':'filmSubpageContentWrapper'})
-        castGroups = castList.findAll(["dd","dt"])
+        castList = soup.find("div", {'class': 'filmSubpageContentWrapper'})
+        castGroups = castList.findAll(["dd", "dt"])
         personList = []
         for cast in castGroups:
             if cast.name == 'dt':
@@ -99,30 +100,30 @@ class MovieParser(ObjectParser):
                 for person in castList:
 
                     try:
-                        role = person.find("span",{'class':'roleName'}).text
+                        role = person.find("span", {'class': 'roleName'}).text
                     except AttributeError:
                         role = None
 
-                    name = person.find("span",{'class':'personName'}).text
+                    name = person.find("span", {'class': 'personName'}).text
 
                     patternlink = "/person/(.+)-(?P<id>[0-9]*)"
                     patternimg = "http://1.fwcdn.pl/p/([0-9]{2})/([0-9]{2})/(?P<id>[0-9]*)/([0-9]*).([0-3]*).jpg"
 
-                    href = person.find("span",{'class':'personName'}).find("a")['href']
+                    href = person.find("span", {'class': 'personName'}).find("a")['href']
 
-                    results = re.search(patternlink,href)
+                    results = re.search(patternlink, href)
                     if results:
                         id = results.group("id")
                     else:
-                        results = re.search(patternimg,unicode(person.extract()))
+                        results = re.search(patternimg, unicode(person.extract()))
                         id = results.group("id")
 
-                    personList.append( Person(id,title=name,roleType=roleType,roleName=role,url=href) )
+                    personList.append(Person(id, title=name, roleType=roleType, roleName=role, url=href))
         return personList
 
     def parse_additionalinfo(self):
         more_infos = []
-        more_info = self.soup.find("div","pageBox sep-hr")
+        more_info = self.soup.find("div", "pageBox sep-hr")
         more_info = more_info.find("dl")
         for more in more_info.findAll('dt'):
             if more.text != u'inne tytuły:':
@@ -131,27 +132,27 @@ class MovieParser(ObjectParser):
 
     def parse_basicinfo(self):
         basic_infos = []
-        basic_info = self.soup.find("div","filmInfo")
+        basic_info = self.soup.find("div", "filmInfo")
         for basic in basic_info.findAll('th'):
-                basic_infos.append({'name':basic.text,'value':basic.nextSibling.text})
+            basic_infos.append({'name': basic.text, 'value': basic.nextSibling.text})
         return basic_infos
 
     def parse_photos(self):
         grabber = HTMLGrabber()
-        content = grabber.retrieve( self.obj.url+"/photos" )
+        content = grabber.retrieve(self.obj.url + "/photos")
         soup = BeautifulSoup(content)
-        photoList = soup.find("ul",'block-list photosList')
+        photoList = soup.find("ul", 'block-list photosList')
         images = []
         for photo in photoList.findAll("img"):
-                images.append({'href':photo.parent['href'],'thumb':photo['src']})
+            images.append({'href': photo.parent['href'], 'thumb': photo['src']})
         return images
 
     def parse_posters(self):
         grabber = HTMLGrabber()
-        content = grabber.retrieve( self.obj.url+"/posters" )
+        content = grabber.retrieve(self.obj.url + "/posters")
         soup = BeautifulSoup(content)
-        photoList = soup.find("ul",'block-list postersList')
+        photoList = soup.find("ul", 'block-list postersList')
         images = []
-        for photo in photoList("img",{'class':"lbProxy"}):
-            images.append({'href':photo['src'].replace(".2.jpg",'.3.jpg'),'thumb':photo['src']})
+        for photo in photoList("img", {'class': "lbProxy"}):
+            images.append({'href': photo['src'].replace(".2.jpg", '.3.jpg'), 'thumb': photo['src']})
         return images

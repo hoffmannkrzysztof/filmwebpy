@@ -1,11 +1,11 @@
 # coding=utf-8
 from urlparse import urljoin
+
 from filmweb.vars import filmweb_root
 
 
 class BaseObject(object):
-
-    def __init__(self,objID,title=None,url=None,roleType=None,roleName=None):
+    def __init__(self, objID, title=None, url=None, roleType=None, roleName=None):
         self.reset()
         self.set_id(objID)
         self.set_url(url)
@@ -21,7 +21,7 @@ class BaseObject(object):
         self.title = None
         self.url = None
 
-    def get(self,key,default=None):
+    def get(self, key, default=None):
         try:
             if self[key]:
                 return self[key]
@@ -37,13 +37,13 @@ class BaseObject(object):
             return self.data[key]
         else:
 
-            if key in ('title','year','title_original','desc','poster','birthdate','deaddate','canonicalname'):
+            if key in ('title', 'year', 'title_original', 'desc', 'poster', 'birthdate', 'deaddate', 'canonicalname'):
                 dic = self.parser_obj.parse_basic()
                 self.set_data(dic)
             elif key == 'url':
                 self[key] = self.parser_obj.parse_real_url()
             else:
-                method = getattr(self.parser_obj, 'parse_'+key)
+                method = getattr(self.parser_obj, 'parse_' + key)
                 self[key] = method()
             return self.data[key]
 
@@ -61,12 +61,12 @@ class BaseObject(object):
     def parser(self):
         return self._parser()
 
-    def set_data(self,data):
+    def set_data(self, data):
         self.data.update(data)
 
-    def set_url(self,url):
+    def set_url(self, url):
         if url is not None:
-            self.url = urljoin(filmweb_root,url).strip()
+            self.url = urljoin(filmweb_root, url).strip()
         else:
             self.url = self.get_url()
 
@@ -80,10 +80,10 @@ class BaseObject(object):
         else:
             return self._get_url()
 
-    def set_id(self,id):
+    def set_id(self, id):
         self.objID = int(id)
 
-    def set_title(self,title):
+    def set_title(self, title):
         if title is not None:
             title = title.split("/")[0]
             self.title = title
@@ -93,5 +93,5 @@ class BaseObject(object):
         self.title = self.title.strip()
         self['title'] = self.title
 
-    def isSame(self,item):
+    def isSame(self, item):
         return self.objID == self.objID
