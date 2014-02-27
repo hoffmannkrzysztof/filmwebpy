@@ -3,6 +3,7 @@ import unittest
 from filmweb import Filmweb
 import Levenshtein
 from datetime import datetime
+from filmweb.func import get_list_genres
 
 
 class Serialparser(unittest.TestCase):
@@ -163,3 +164,8 @@ class EpisodesTest(unittest.TestCase):
         self.assertEqual(episode['season'],3)
         self.assertEqual(episode['number'],2)
         self.assertEqual(episode['date'],datetime.strptime("2006-09-12","%Y-%m-%d" ))
+
+
+class GenresTest(unittest.TestCase):
+    def test_genres_count(self):
+        self.assertEqual(len(get_list_genres()), 66)
