@@ -164,5 +164,14 @@ class EpisodesTest(unittest.TestCase):
 
 
 class GenresTest(unittest.TestCase):
+    def setUp(self):
+        self.fa = Filmweb('http')
+
     def test_genres_count(self):
         self.assertEqual(len(get_list_genres()), 66)
+
+    def test_search_genre(self):
+        movie = self.fa.get_movie(32225)
+        found_movies = self.fa.search_filtered_movie(title=None, results=20, genre_id=3, search_type='film')
+        print found_movies
+        self.assertTrue(movie in found_movies)

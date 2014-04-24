@@ -66,7 +66,7 @@ def get_datetime_or_none(txt):
 
 def get_list_genres():
     grabber = HTMLGrabber()
-    content = grabber.retrieve(filmweb_search_blank % 'film')
+    content = grabber.retrieve(filmweb_search_blank + "/film")
     soup = BeautifulSoup(content)
     genres = soup.findAll('input', {'name': 'genreIds'})
     list_genre = []
