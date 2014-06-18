@@ -22,7 +22,6 @@ class FilmwebHTTP(object):
 
         url = filmweb_search_blank + "?" + urllib.urlencode(params)
 
-        print url
         content = grabber.retrieve(url)  #@Make search more pages not only 1
         soup = BeautifulSoup(content)
         li_list.extend(soup.findAll('div', {'class': 'hitDescWrapper'}))
