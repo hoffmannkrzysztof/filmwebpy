@@ -144,7 +144,7 @@ class MovieParser(ObjectParser):
         photoList = soup.find("ul", 'block-list photosList')
         images = []
         for photo in photoList.findAll("img"):
-            images.append({'href': photo.parent['href'], 'thumb': photo['src']})
+            images.append({'href': photo.parent['href'], 'thumb': photo['src'], 'image': photo.parent['data-photo']})
         return images
 
     def parse_posters(self):

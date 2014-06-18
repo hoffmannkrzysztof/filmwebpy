@@ -175,3 +175,13 @@ class GenresTest(unittest.TestCase):
         found_movies = self.fa.search_filtered_movie(title=None, results=20, genre_id=3, search_type='film')
         print found_movies
         self.assertTrue(movie in found_movies)
+
+
+class XmenImagesGalleryTest(unittest.TestCase):
+    def setUp(self):
+        self.fa = Filmweb('http')
+        self.movie = self.fa.get_movie(489280)
+
+    def test_images(self):
+        self.assertEqual(len(self.movie['photos']), 46)
+        print self.movie['photos']
