@@ -33,7 +33,7 @@ class PersonParser(ObjectParser):
 
             if dic.get('data urodzenia', None):
                 try:
-                    dic['birthdate'] = datetime.datetime.strptime(dic['data urodzenia'], "%Y-%m-%d")  #1923-03-13
+                    dic['birthdate'] = datetime.datetime.strptime(dic['data urodzenia'], "%Y-%m-%d")  # 1923-03-13
                 except ValueError:
                     dic['birthdate'] = None
 

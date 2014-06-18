@@ -29,7 +29,7 @@ class MovieParser(ObjectParser):
         dic['year'] = get_text_or_none(year, 'int')
 
         s = filmTitle.find('h2')
-        #self.removeTag(s,"span")
+        # self.removeTag(s,"span")
         dic['title_original'] = get_text_or_none(s)
 
         desc = self.soup.find('div', {'class': "filmPlot"})

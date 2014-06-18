@@ -22,7 +22,7 @@ class FilmwebHTTP(object):
 
         url = filmweb_search_blank + "?" + urllib.urlencode(params)
 
-        content = grabber.retrieve(url)  #@Make search more pages not only 1
+        content = grabber.retrieve(url)  # @Make search more pages not only 1
         soup = BeautifulSoup(content)
         li_list.extend(soup.findAll('div', {'class': 'hitDescWrapper'}))
         img_list.extend(soup.findAll('div', {'class': 'hitImage'}))
@@ -82,7 +82,7 @@ class FilmwebHTTP(object):
 
 
     def _search_person(self, title, results=20):
-        #http://www.filmweb.pl/search/person?q=Tom+Cruise
+        # http://www.filmweb.pl/search/person?q=Tom+Cruise
         """Return list of persons"""
         grabber = HTMLGrabber()
         p_title = grabber.encode_string(title)

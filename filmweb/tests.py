@@ -67,7 +67,7 @@ class Movieparser(unittest.TestCase):
         self.assertEqual(len(self.movie['photos']), 45)
 
         self.assertEqual('Leon zawodowiec', self.movie.title, )
-        #self.assertEqual('Léon',self.movie['title_original'],)
+        # self.assertEqual('Léon',self.movie['title_original'],)
 
     def test_year(self):
         self.assertEqual(self.movie['year'], '1994')
@@ -111,11 +111,11 @@ class PosterEmptyTest(unittest.TestCase):
 class CanonicalnameTest(unittest.TestCase):
     def setUp(self):
         self.fa = Filmweb('http')
-        self.karewicz = self.fa.get_person(461)  #Emil Karewicz
-        self.kot = self.fa.get_person(148066)  #tomasz kot
-        self.zmuda = self.fa.get_person(464409)  #marta zmuda trzebiatowska
-        self.niro = self.fa.get_person(123)  #Robert De Niro
-        self.hopkins = self.fa.get_person(48)  #Anthony Hopkins I
+        self.karewicz = self.fa.get_person(461)  # Emil Karewicz
+        self.kot = self.fa.get_person(148066)  # tomasz kot
+        self.zmuda = self.fa.get_person(464409)  # marta zmuda trzebiatowska
+        self.niro = self.fa.get_person(123)  # Robert De Niro
+        self.hopkins = self.fa.get_person(48)  # Anthony Hopkins I
 
     def test_names(self):
         self.assertEqual(self.karewicz['canonicalname'], u'Karewicz Emil')
@@ -153,7 +153,7 @@ class IxjanaTest(unittest.TestCase):
 class EpisodesTest(unittest.TestCase):
     def setUp(self):
         self.fa = Filmweb('http')
-        self.movie = self.fa.get_movie(130177)  #Dr House
+        self.movie = self.fa.get_movie(130177)  # Dr House
 
     def test_episode(self):
         episode = self.movie['episodes'][47]
@@ -176,6 +176,7 @@ class GenresTest(unittest.TestCase):
         found_movies = self.fa.search_filtered_movie(title=None, results=20, genre_id=3, search_type='film')
         self.assertTrue(movie in found_movies)
     """
+
 
 class XmenImagesGalleryTest(unittest.TestCase):
     def setUp(self):
