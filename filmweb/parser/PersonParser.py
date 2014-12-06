@@ -47,7 +47,7 @@ class PersonParser(ObjectParser):
     def parse_filmography(self):
         from filmweb.Movie import Movie
 
-        movie_links = self.soup.findAll("td", {'class': "filmTitleCol"})
+        movie_links = self.soup.findAll("tr", {'data-type': "F"})
 
         movies = []
         for movie_link in movie_links:

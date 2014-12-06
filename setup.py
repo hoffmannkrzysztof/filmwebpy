@@ -1,6 +1,6 @@
 from setuptools import setup
 
-version = '0.1.4.2'
+version = '0.1.4.3'
 
 setup(name='filmwebpy',
       version=version,
@@ -11,7 +11,7 @@ setup(name='filmwebpy',
       ],
       keywords='python filmweb parser',
       author='Krzysztof Hoffmann',
-      author_email='krzysiekpl@gmail.com',
+      author_email='krzysztof.hoffmann@increase.pl',
       url='http://github.com/hoffmannkrzysztof/filmwebpy',
       license='GPL',
       packages=['filmweb', 'filmweb.parser'],

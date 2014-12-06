@@ -51,16 +51,16 @@ class Movieparser(unittest.TestCase):
 
     def test_cast(self):
         self.assertIsNotNone(self.movie['cast'])
-        self.assertEqual(len(self.movie['cast']), 100)
+        self.assertEqual(len(self.movie['cast']), 77)
 
-        p = self.movie['cast'][2]
+        p = self.movie['cast'][0]
         self.assertEqual(p['title'], u'Jean Reno')
         self.assertEqual(p['roleName'], u'Léon')
         self.assertEqual(p['roleType'], u'aktor')
         self.assertEqual(p.objID, 88)
 
     def test_infos(self):
-        self.assertEqual(len(self.movie['additionalinfo']), 4)
+        self.assertEqual(len(self.movie['additionalinfo']), 5)
 
         self.assertEqual(len(self.movie['basicinfo']), 5)
 
