@@ -11,7 +11,7 @@ class PersonParser(ObjectParser):
         dic = {}
 
         poster = self.soup.find("img", "personBigPhoto")
-        if poster['src'].find("NoImg") == -1:
+        if poster['src'].find("plug.svg") == -1:
             dic['poster'] = poster['src']
         else:
             dic['poster'] = None
