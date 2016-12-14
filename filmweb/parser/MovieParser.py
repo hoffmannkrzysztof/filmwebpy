@@ -147,7 +147,7 @@ class MovieParser(ObjectParser):
         more_info = self.soup.find("div", {'class': "otherInfo"})
         more_info = more_info.find("dl")
         for more in more_info.findAll('dt'):
-            if more.text != u'inne tytuły:':
+            if more.text not in(u'inne tytuły:',u'\xa0'):
                 more_infos.append({'name': more.text.replace(":", ""), 'value': more.nextSibling.text})
         return more_infos
 
@@ -155,7 +155,8 @@ class MovieParser(ObjectParser):
         basic_infos = []
         basic_info = self.soup.find("div", "filmInfo")
         for basic in basic_info.findAll('th'):
-            basic_infos.append({'name': basic.text, 'value': basic.nextSibling.text})
+            if basic.text not in (u'\xa0',):
+                basic_infos.append({'name': basic.text, 'value': basic.nextSibling.text})
         return basic_infos
 
     def parse_photos(self):
