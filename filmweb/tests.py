@@ -71,7 +71,6 @@ class Movieparser(unittest.TestCase):
         self.assertEqual(p.objID, 88)
 
     def test_infos(self):
-        print self.movie['basicinfo']
         self.assertEqual(len(self.movie['additionalinfo']), 5)
 
         self.assertEqual(len(self.movie['basicinfo']), 5)
@@ -104,7 +103,7 @@ class Osobaparser(unittest.TestCase):
 
     def test_filmography(self):
         filmography = self.osoba['filmography']
-        self.assertGreater(self.osoba['filmography'], 0)
+        self.assertGreater(len(self.osoba['filmography']), 0)
 
         film = filmography[0]
         self.assertEqual(film.objID, 742974)

@@ -1,13 +1,13 @@
 # coding=utf-8
+import datetime
 import re
 
 from bs4 import BeautifulSoup
-import datetime
 
 from filmweb.Person import Person
+from filmweb.func import get_text_or_none
 from filmweb.parser.HTMLGrabber import HTMLGrabber
 from filmweb.parser.ObjectParser import ObjectParser
-from filmweb.func import get_text_or_none, get_datetime_or_none
 
 
 class MovieParser(ObjectParser):
@@ -103,7 +103,7 @@ class MovieParser(ObjectParser):
             if results:
                 id = results.group("id")
             else:
-                results = re.search(pattern_img, unicode(img_html.extract()))
+                results = re.search(pattern_img, repr(img_html.extract()))
                 id = results.group("id")
 
             role_html  = cast.find('a',{'rel':'v:starring'})
@@ -136,7 +136,7 @@ class MovieParser(ObjectParser):
                     if results:
                         id = results.group("id")
                     else:
-                        results = re.search(patternimg, unicode(person.extract()))
+                        results = re.search(patternimg, repr(person.extract()))
                         id = results.group("id")
 
                     personList.append(Person(id, title=name, roleType=roleType, roleName=role, url=href))

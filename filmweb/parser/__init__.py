@@ -1,6 +1,10 @@
 # coding=utf-8
 import re
-import urllib
+
+try:
+    from urllib import urlencode
+except:
+    from urllib.parse import urlencode
 
 from bs4 import BeautifulSoup
 
@@ -20,7 +24,7 @@ class FilmwebHTTP(object):
         img_list = []
         params = {"q": title.encode("utf-8"), "page": 1}
 
-        url = filmweb_search_blank + "?" + urllib.urlencode(params)
+        url = filmweb_search_blank + "?" + urlencode(params)
 
         content = grabber.retrieve(url)  # @Make search more pages not only 1
         soup = BeautifulSoup(content)

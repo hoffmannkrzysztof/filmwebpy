@@ -1,5 +1,8 @@
 # coding=utf-8
-from urlparse import urljoin
+try:
+    from urlparse import urljoin
+except:
+    from urllib.parse import urljoin
 
 from filmweb.vars import filmweb_root
 
@@ -33,7 +36,7 @@ class BaseObject(object):
     def __getitem__(self, key):
         """Return the value for a given key"""
 
-        if self.data.has_key(key):
+        if key in self.data:
             return self.data[key]
         else:
 
