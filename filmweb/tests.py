@@ -6,6 +6,17 @@ from filmweb import Filmweb
 from filmweb.func import get_list_genres
 
 
+def is_valid_url(url):
+    import re
+    regex = re.compile(
+        r'^https?://'  # http:// or https://
+        r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+[A-Z]{2,6}\.?|'  # domain...
+        r'localhost|'  # localhost...
+        r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
+        r'(?::\d+)?'  # optional port
+        r'(?:/?|[/?]\S+)$', re.IGNORECASE)
+    return url is not None and regex.search(url)
+
 class Serialparser(unittest.TestCase):
     def setUp(self):
         self.fa = Filmweb('http')
@@ -139,6 +150,10 @@ class NadZycieTest(unittest.TestCase):
     def test_posters(self):
         self.assertEqual(len(self.movie['posters']), 2)
 
+        for poster in self.movie['posters']:
+            self.assertIsNotNone(is_valid_url(poster['href']))
+
+
 
 class IxjanaTest(unittest.TestCase):
     def setUp(self):
@@ -186,3 +201,6 @@ class XmenImagesGalleryTest(unittest.TestCase):
 
     def test_images(self):
         self.assertEqual(len(self.movie['photos']), 46)
+
+        for photo in self.movie['photos']:
+            self.assertIsNotNone(is_valid_url(photo['image']), msg=photo['image'])
