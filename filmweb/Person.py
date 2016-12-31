@@ -3,7 +3,7 @@ import sys
 
 from filmweb.addon import BaseObject
 from filmweb.parser.PersonParser import PersonParser
-from vars import filmweb_person_link
+from filmweb.vars import filmweb_person_link
 
 
 class Person(BaseObject):
