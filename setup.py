@@ -1,6 +1,6 @@
 from setuptools import setup
 
-version = '0.1.5'
+version = '0.1.5.1'
 
 setup(name='filmwebpy',
       version=version,
