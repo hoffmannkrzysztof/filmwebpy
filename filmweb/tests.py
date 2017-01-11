@@ -203,3 +203,12 @@ class XmenImagesGalleryTest(unittest.TestCase):
 
         for photo in self.movie['photos']:
             self.assertIsNotNone(is_valid_url(photo['image']), msg=photo['image'])
+
+
+class SztukaKochaniaTest(unittest.TestCase):
+    def setUp(self):
+        self.fa = Filmweb('http')
+        self.movie = self.fa.get_movie(763312)
+
+    def test_cast(self):
+        self.assertEquals(len(self.movie['cast']), 19)
