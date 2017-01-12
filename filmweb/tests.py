@@ -17,6 +17,7 @@ def is_valid_url(url):
         r'(?:/?|[/?]\S+)$', re.IGNORECASE)
     return url is not None and regex.search(url)
 
+
 class Serialparser(unittest.TestCase):
     def setUp(self):
         self.fa = Filmweb('http')
@@ -62,13 +63,19 @@ class Movieparser(unittest.TestCase):
 
     def test_cast(self):
         self.assertIsNotNone(self.movie['cast'])
-        self.assertEqual(len(self.movie['cast']), 78)
+        self.assertEqual(len(self.movie['cast']), 101)
 
         p = self.movie['cast'][0]
         self.assertEqual(p['title'], u'Jean Reno')
         self.assertEqual(p['roleName'], u'Léon')
         self.assertEqual(p['roleType'], u'aktor')
         self.assertEqual(p.objID, 88)
+
+        for type in ['aktor', u'reżyser', 'scenarzysta', u'zdjęcia', 'muzyka', u'montaż', 'scenografia', 'kostiumy',
+                     'producent', u'dźwięk']:
+            self.assertTrue(
+                any([cast for cast in self.movie['cast'] if cast['roleType'] == type]), msg='missing %s' % type
+            )
 
     def test_infos(self):
         self.assertEqual(len(self.movie['additionalinfo']), 5)
@@ -95,7 +102,6 @@ class Osobaparser(unittest.TestCase):
         self.assertEqual(self.osoba['birthdate'].day, 9)
         self.assertEqual(self.osoba['birthdate'].year, 1941)
         self.assertIsNotNone(self.osoba.get('poster'))
-
 
     def test_in(self):
         found_osoby = self.fa.search_person("Kazimierz Kaczor")
@@ -151,7 +157,6 @@ class NadZycieTest(unittest.TestCase):
 
         for poster in self.movie['posters']:
             self.assertIsNotNone(is_valid_url(poster['href']))
-
 
 
 class IxjanaTest(unittest.TestCase):
@@ -211,4 +216,6 @@ class SztukaKochaniaTest(unittest.TestCase):
         self.movie = self.fa.get_movie(763312)
 
     def test_cast(self):
-        self.assertEquals(len(self.movie['cast']), 19)
+        self.assertEquals(len(self.movie['cast']), 30)
+        self.assertNotEqual(self.movie['cast'][-1]['roleType'], 'aktor')
+        self.assertEquals(len(self.movie['photos']), 28)

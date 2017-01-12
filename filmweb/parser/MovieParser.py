@@ -79,70 +79,51 @@ class MovieParser(ObjectParser):
         return episodes_list
 
     def parse_cast(self):
-        grabber = HTMLGrabber()
-        content = grabber.retrieve(self.obj.url + "/cast/actors")
-        soup = BeautifulSoup(content)
-        cast_list_table = soup.find("table", {'class': 'filmCast'})
-        cast_list = cast_list_table.find("tbody")
-
         personList = []
-        for cast in cast_list_table.findAll('tr', id=re.compile("role_")):
+        for url in ["/cast/actors", "/cast/crew"]:
+            grabber = HTMLGrabber()
+            content = grabber.retrieve(self.obj.url + url)
+            soup = BeautifulSoup(content)
 
-            url_html = cast.find("a", {'class': 'pImg49'})
-            url = url_html['href']
-            img_html = url_html.find("img")
+            for filmCastBox in soup.findAll("div", {'class': 'filmCastBox'}):
 
-            pattern_images = [
-                "http://1.fwcdn.pl/p/([0-9]{2})/([0-9]{2})/(?P<id>[0-9]*)/([0-9]*).([0-3]*).jpg",
-                "http://1.fwcdn.pl/p/([0-9]{2})/([0-9]{2})/(?P<id>[0-9]*)/([0-9]*)_1.([0-3]*).jpg"
-            ]
+                personType = filmCastBox.previous
 
-            pattern_link = "/person/(.+)-(?P<id>[0-9]*)"
+                personTypesChange = {'obsada': 'aktor', 'scenariusz': 'scenarzysta',
+                                     'produkcja': 'producent'}  # backward compatibility
+                if personType in personTypesChange:  #
+                    personType = personTypesChange[personType]
 
-            id = 0
-            results = re.search(pattern_link, url_html['href'])
-            if results:
-                id = results.group("id")
-            else:
-                for pattern in pattern_images:
-                    results = re.search(pattern, repr(img_html.extract()))
-                    if results:
-                        id = results.group("id")
+                for cast in filmCastBox.findAll('tr', id=re.compile("role_")):
 
-            role_html = cast.find('a', {'rel': 'v:starring'})
-            role = role_html.parent.nextSibling.nextSibling.text
+                    url_html = cast.find("a", {'class': 'pImg49'})
+                    url = url_html['href']
+                    img_html = url_html.find("img")
 
-            name = role_html.parent.nextSibling.text
+                    pattern_images = [
+                        "http://1.fwcdn.pl/p/([0-9]{2})/([0-9]{2})/(?P<id>[0-9]*)/([0-9]*).([0-3]*).jpg",
+                        "http://1.fwcdn.pl/p/([0-9]{2})/([0-9]{2})/(?P<id>[0-9]*)/([0-9]*)_1.([0-3]*).jpg"
+                    ]
 
-            personList.append(Person(id, title=name, roleType='aktor', roleName=role, url=url))
+                    pattern_link = "/person/(.+)-(?P<id>[0-9]*)"
 
-            if cast.name == 'dt':
-                roleType = cast.text.split("/")[0].strip()
-                roleType
-            elif cast.name == 'dd':
-                castList = cast.findAll("li")
-                for person in castList:
-
-                    try:
-                        role = person.find("span", {'class': 'roleName'}).text
-                    except AttributeError:
-                        role = None
-
-                    name = person.find("span", {'class': 'personName'}).text
-
-                    patternlink = "/person/(.+)-(?P<id>[0-9]*)"
-                    patternimg = "http://1.fwcdn.pl/p/([0-9]{2})/([0-9]{2})/(?P<id>[0-9]*)/([0-9]*).([0-3]*).jpg"
-
-                    href = person.find("span", {'class': 'personName'}).find("a")['href']
-
-                    results = re.search(patternlink, href)
+                    id = 0
+                    results = re.search(pattern_link, url_html['href'])
                     if results:
                         id = results.group("id")
                     else:
-                        results = re.search(patternimg, repr(person.extract()))
-                        id = results.group("id")
+                        for pattern in pattern_images:
+                            results = re.search(pattern, repr(img_html.extract()))
+                            if results:
+                                id = results.group("id")
 
-                    personList.append(Person(id, title=name, roleType=roleType, roleName=role, url=href))
+                    role_html = cast.find('a', {'rel': 'v:starring'})
+                    role = role_html.parent.nextSibling.nextSibling.text
+
+                    name = role_html.parent.nextSibling.text
+
+                    personList.append(Person(id, title=name, roleType=personType, roleName=role, url=url))
+
         return personList
 
     def parse_additionalinfo(self):
